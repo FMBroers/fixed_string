@@ -529,6 +529,138 @@ TEST(fixed_string, sanitycheck) {
 	ASSERT_STREQ("f12345678912345", sc.c_str());
 }
 
+TEST(fixed_string, operator_array_subscript) {
+	fixed_string::fixed_string<10> fs("helloworld");
+	ASSERT_EQ('h', fs[0]);
+	ASSERT_EQ('e', fs[1]);
+	ASSERT_EQ('l', fs[8]);
+	ASSERT_EQ('d', fs[9]);
+
+	ASSERT_NE('?', fs[-1]);
+	ASSERT_NE('?', fs[10]);
+
+	fixed_string::fixed_string_with_guard sc('h');
+	sc += "elloworld123465789";
+	ASSERT_EQ('h', sc[0]);
+	ASSERT_EQ('e', sc[1]);
+	ASSERT_EQ('l', sc[8]);
+	ASSERT_EQ('d', sc[9]);
+
+	ASSERT_EQ('?', sc[-1]);
+	ASSERT_EQ('6', sc[14]);
+	ASSERT_EQ('?', sc[15]);
+	ASSERT_EQ('?', sc[20]);
+}
+
+TEST(fixed_string, operator_assignment_by_sum) {
+	fixed_string::fixed_string<10> fs_empty_ctor;
+	EXPECT_STREQ("", fs_empty_ctor.c_str());
+
+	fs_empty_ctor += 'a';
+	EXPECT_STREQ("a", fs_empty_ctor.c_str());
+
+	fs_empty_ctor += "bc";
+	EXPECT_STREQ("abc", fs_empty_ctor.c_str());
+
+	fs_empty_ctor += fs_empty_ctor.c_str();
+	EXPECT_STREQ("abcabc", fs_empty_ctor.c_str());
+
+	fs_empty_ctor += "123456789";
+	EXPECT_STREQ("abcabc1234", fs_empty_ctor.c_str());
+
+	fs_empty_ctor = "";
+
+	fixed_string::fixed_string<10> fs_char_ctor('c');
+	EXPECT_STREQ("c", fs_char_ctor.c_str());
+
+	fs_char_ctor += 'a';
+	EXPECT_STREQ("ca", fs_char_ctor.c_str());
+
+	fs_char_ctor += "bc";
+	EXPECT_STREQ("cabc", fs_char_ctor.c_str());
+
+	fs_char_ctor += fs_char_ctor.c_str();
+	EXPECT_STREQ("cabccabc", fs_char_ctor.c_str());
+
+	fs_char_ctor += fs_empty_ctor.c_str();
+	EXPECT_STREQ("cabccabc", fs_char_ctor.c_str());
+
+	fs_char_ctor += "123456789";
+	EXPECT_STREQ("cabccabc12", fs_char_ctor.c_str());
+
+	fs_char_ctor = 'a';
+
+	fixed_string::fixed_string<10> fs_string_ctor("hello");
+	EXPECT_STREQ("hello", fs_string_ctor.c_str());
+
+	fs_string_ctor += 'a';
+	EXPECT_STREQ("helloa", fs_string_ctor.c_str());
+
+	fs_string_ctor += "bc";
+	EXPECT_STREQ("helloabc", fs_string_ctor.c_str());
+
+	fs_string_ctor += fs_string_ctor.c_str();
+	EXPECT_STREQ("helloabche", fs_string_ctor.c_str());
+
+	fs_string_ctor += "123456789";
+	EXPECT_STREQ("helloabche", fs_string_ctor.c_str());
+
+	fs_string_ctor = "hello";
+
+
+	fixed_string::fixed_string<10> fs_fs_ctor_empty(fs_empty_ctor);
+	EXPECT_STREQ("", fs_fs_ctor_empty.c_str());
+
+	fs_fs_ctor_empty += 'a';
+	EXPECT_STREQ("a", fs_fs_ctor_empty.c_str());
+
+	fs_fs_ctor_empty += "bc";
+	EXPECT_STREQ("abc", fs_fs_ctor_empty.c_str());
+
+	fs_fs_ctor_empty += fs_fs_ctor_empty.c_str();
+	EXPECT_STREQ("abcabc", fs_fs_ctor_empty.c_str());
+
+	fs_fs_ctor_empty += "123456789";
+	EXPECT_STREQ("abcabc1234", fs_fs_ctor_empty.c_str());
+
+	fs_fs_ctor_empty = "";
+
+
+	fixed_string::fixed_string<10> fs_fs_ctor_char(fs_char_ctor);
+	EXPECT_STREQ("a", fs_fs_ctor_char.c_str());
+
+	fs_fs_ctor_char += 'a';
+	EXPECT_STREQ("aa", fs_fs_ctor_char.c_str());
+
+	fs_fs_ctor_char += "bc";
+	EXPECT_STREQ("aabc", fs_fs_ctor_char.c_str());
+
+	fs_fs_ctor_char += fs_fs_ctor_char.c_str();
+	EXPECT_STREQ("aabcaabc", fs_fs_ctor_char.c_str());
+
+	fs_fs_ctor_char += "123456789";
+	EXPECT_STREQ("aabcaabc12", fs_fs_ctor_char.c_str());
+
+	fs_fs_ctor_char = "";
+
+
+	fixed_string::fixed_string<10> fs_fs_ctor_string(fs_string_ctor);
+	EXPECT_STREQ("hello", fs_fs_ctor_string.c_str());
+
+	fs_fs_ctor_string += 'a';
+	EXPECT_STREQ("helloa", fs_fs_ctor_string.c_str());
+
+	fs_fs_ctor_string += "bc";
+	EXPECT_STREQ("helloabc", fs_fs_ctor_string.c_str());
+
+	fs_fs_ctor_string += fs_fs_ctor_string.c_str();
+	EXPECT_STREQ("helloabche", fs_fs_ctor_string.c_str());
+
+	fs_fs_ctor_string += "123456789";
+	EXPECT_STREQ("helloabche", fs_fs_ctor_string.c_str());
+
+	fs_fs_ctor_string = "";
+}
 
 
 /*

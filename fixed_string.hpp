@@ -182,7 +182,7 @@ public:
 			// in template class meegeven voor al dan niet afhandelen van exceptions
 			/*std::cout << "CANUSELOCALEXCEPTIONS " << std::endl;*/
 			// error char deprecated
-			error_char = c;
+			error_char = '?';
 		}
 #endif
 #if defined(CANUSESTDEXCEPTIONS)
@@ -204,11 +204,6 @@ public:
 	}
 
 	template<class T>
-	// typename decletype ( pin::begin() )
-	// pins.hpp pin_in_from
-
-	// traits uitzoeken
-	// isIteratable
 	fixed_string & operator+=(T input) {
 		for (char ch : iter(input))
 			append(ch);
@@ -293,7 +288,7 @@ public:
 	}
 	// doesn't compile ?
 	char operator[](int n) const {
-		return valid(n) ? pBuff[n] : '\0';
+		return valid(n) ? pBuff[n] : '?';
 	}
 
 	char * begin() {
