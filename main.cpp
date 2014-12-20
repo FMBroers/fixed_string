@@ -41,7 +41,7 @@ TEST(fixed_string, Constructor_char_array) {
 	EXPECT_EQ(strlen("char_array"),							fs_char_array_same_length.get_used_length());
 
 	/*
-	 * @TODO not happy with random use of char* and std::string
+	 * @TODO not happy with random use of char* and std::string lengths
 	 *  should rewrite this portion of the test...
 	 *  either stick to std::string or to char *
 	 *  or calculate all expected values manually
@@ -578,7 +578,12 @@ TEST(fixed_string, operator_assignment_by_sum) {
 
 	fs_char_ctor += "bc";
 	EXPECT_STREQ("cabc", fs_char_ctor.c_str());
+	Ongeveer 75.000.000 resultaten (0,30 seconden)
+	Zoekresultaten
 
+	    GitHub For Beginners: Commit, Push And Go - ReadWrite
+	    readwrite.com/2013/10/.../github-for-beginners-part-...Vertaal deze pagina
+	    2 okt. 2013 - Now that these steps have been accomplished, let's add the first part of your project now by making your first commit to GitHub. When we last ...
 	fs_char_ctor += fs_char_ctor.c_str();
 	EXPECT_STREQ("cabccabc", fs_char_ctor.c_str());
 

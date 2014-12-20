@@ -35,7 +35,7 @@
  * \section usage_sec Usage
  *
  * \subsection step1 Step 1:
- * To use this library, simply #include "fixed_string.hpp" (or <fixed_string> when you're using this
+ * To use this library, simply #include "fixed_string.hpp" (or < fixed_string > when you're using this
  * library within your PATH)
  *
  * \subsection step2 Step 2:
@@ -44,7 +44,7 @@
  * so when you are creating a string with 5 characters as in fixed_string<5>, then you can put five in the
  * string, the allocated length will be equivalent to six characters.
  *
- * This behaviour lines up with the c-functions strlen() and sizeof(): \ref http://en.cppreference.com/w/c/string/byte/strlen
+ * This behaviour lines up with the c-functions strlen() and sizeof(): http://en.cppreference.com/w/c/string/byte/strlen
  * \code
  * fixed_string<5> MyNewString("hello");
  * strlen("hello"); // = 5

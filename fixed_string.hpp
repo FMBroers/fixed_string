@@ -203,6 +203,10 @@ public:
 		return *this;
 	}
 
+	//! operator+= appends character to this fixed_string
+	//! but only if append() this allows, which means
+	//! that the allocated memory is larger than the stored
+	//! string
 	template<class T>
 	fixed_string & operator+=(T input) {
 		for (char ch : iter(input))
@@ -210,77 +214,121 @@ public:
 		return *this;
 	}
 
+	//! operator= assigns the input rhs to the fixed_string.
+	//! it uses the operator+=, which also implies that
+	//! all characters <i>after<\i> the allocated length are
+	//! discarded (and the error_char is set to '?').
 	template<typename T>
 	fixed_string & operator=(T const & rhs) {
 		reset();
 		return *this += rhs;
 	}
 
-	// Need this specialization as this class contains a const attribute.
+	//! operator= assigns the input rhs to the fixed_string.
+	//! it uses the operator+=, which also implies that
+	//! all characters <i>after<\i> the allocated length are
+	//! discarded (and the error_char is set to '?').
+	//!
+	//! This specialization is needed as the constructor
+	//! automatically creates this implementation, but it
+	//! cannot know what to do with the const attributs
+	//! of the fixed_string.
 	fixed_string & operator=(const fixed_string & rhs) {
 		reset();
 		return *this += rhs;
 	}
 
+	//! operator== compares the rhs (char, char *,
+	//! fixed_string) whith its own buffer. To
+	//! prevent massive code duplication comparing
+	//! various types and various comparison operators
+	//! we use the function \ref compare and compare
+	//! the result of that function with an integer.
+	//!
+	//! returns true only if
+	//! \li all characters are the same
+	//! \li length is the same
+	//!
+	//! All other combinations return false
 	template<typename T>
 	bool operator==(T const & rhs) const {
 		return compare(rhs) == 0;
 	}
 
+	//! operator!= compares the rhs (char, char *,
+	//! fixed_string) whith its own buffer. To
+	//! prevent massive code duplication comparing
+	//! various types and various comparison operators
+	//! we use the function \ref compare and compare
+	//! the result of that function with an integer.
+	//!
+	//! returns true only if
+	//! \li one or more characters differ
+	//!
+	//! All other combinations return false
 	template<typename T>
 	bool operator!=(T const & rhs) const {
 		return compare(rhs) != 0;
 	}
 
+	//! operator> compares the rhs (char, char *,
+	//! fixed_string) whith its own buffer. To
+	//! prevent massive code duplication comparing
+	//! various types and various comparison operators
+	//! we use the function \ref compare and compare
+	//! the result of that function with an integer.
+	//!
+	//! returns true only if
+	//!
+	//! All other combinations return false
 	template<typename T>
 	bool operator>(T const & rhs) const {
 		return compare(rhs) > 0;
 	}
 
+	//! operator< compares the rhs (char, char *,
+	//! fixed_string) whith its own buffer. To
+	//! prevent massive code duplication comparing
+	//! various types and various comparison operators
+	//! we use the function \ref compare and compare
+	//! the result of that function with an integer.
+	//!
+	//! returns true only if
+	//!
+	//! All other combinations return false
 	template<typename T>
 	bool operator<(T const & rhs) const {
 		return compare(rhs) < 0;
 	}
-
+	//! operator<= compares the rhs (char, char *,
+	//! fixed_string) whith its own buffer. To
+	//! prevent massive code duplication comparing
+	//! various types and various comparison operators
+	//! we use the function \ref compare and compare
+	//! the result of that function with an integer.
+	//!
+	//! returns true only if
+	//!
+	//! All other combinations return false
 	template<typename T>
 	bool operator<=(T const & rhs) const {
 		return compare(rhs) <= 0;
 	}
 
+	//! operator>= compares the rhs (char, char *,
+	//! fixed_string) whith its own buffer. To
+	//! prevent massive code duplication comparing
+	//! various types and various comparison operators
+	//! we use the function \ref compare and compare
+	//! the result of that function with an integer.
+	//!
+	//! returns true only if
+	//!
+	//! All other combinations return false
 	template<typename T>
 	bool operator>=(T const & rhs) const {
 		return compare(rhs) >= 0;
 	}
-
-	/*template<typename T, typename T::fixed_string>
-	 bool operator==(T const & rhs) const {
-	 return (fixed_string<0>)compare(rhs) == 0;
-	 }
-
-	 template<typename T, typename T::fixed_string>
-	 bool operator!=(T const & rhs) const {
-	 return (fixed_string<0>)compare(rhs) != 0;
-	 }
-
-	 template<typename T, typename T::fixed_string>
-	 bool operator>(T const & rhs) const {
-	 return (fixed_string<0>)compare(rhs) > 0;
-	 }
-
-	 template<typename T, typename T::fixed_string>
-	 bool operator<(T const & rhs) const {
-	 return (fixed_string<0>)compare(rhs) < 0;
-	 }
-
-	 template<typename T, typename T::fixed_string>
-	 bool operator<=(T const & rhs) const {
-	 return (fixed_string<0>)compare(rhs) <= 0;
-	 }
-
-	 template<typename T, typename T::fixed_string>
-	 bool operator>=(T const & rhs) const {
-	 return (fixed_string<0>)compare(rhs) >= 0;
-	 }*/
 
 	// operator[]
 	char & operator[](int n) {
@@ -433,7 +481,8 @@ public:
 	//! use with care, or machine code can be very
 	//! lengthy.
 	template<int M>
-	fixed_string(const fixed_string<M> & rhs) :
+	fixed_string(const fixed_string<M> & rhs) :/home/martin/Documents/Onderzoekssemester/pva string/workspace/fixed_string/fixed_string.hpp:207: warning: Member operator+=(T input) (function) of class fixed_string::fixed_string< 0 > is not documented.
+
 			fixed_string<0>(contents, length) {
 		for (char c : iter(rhs)) //iters
 			fixed_string<0>::append(c);
