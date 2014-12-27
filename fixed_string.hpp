@@ -54,9 +54,11 @@
 #include "defines.hpp"
 
 namespace fixed_string {
+// @TODO explain why
 //! forward declaration
 template<int N> class fixed_string;
 
+// @TODO rewrite
 /// @brief implementation containing all functions
 /// @details
 /// Usage: none - all functions are inherited by fixed_string<N>
@@ -64,13 +66,30 @@ template<int N> class fixed_string;
 template<>
 class fixed_string<0> {
 private:
+	//! integer which holds the value of the
+	//! maximum length of the fixed_string.
+	//! This value will NEVER change, as
+	//! changing this value will yield the
+	//! function of this library useless
 	const int allocated_length;
+
+	//! Buffer to hold the string in the
+	//! object
 	char *pBuff;
+
+	//! char to indicate an unsuccesfull
+	//! update of a fixed_string
 	char error_char;
 
-	// @TODO dynamic '\0; explain decisions
-
 #if defined(OPTIMIZEFORSPEED)
+	//! If the directive OPTIMIZEFORSPEED
+	//! is set, then an integer holding the
+	//! current length of the fixed_string
+	//! will be used for various operations.
+	//! If this directive has not been set,
+	//! then every time this value is needed
+	//! it will be calculated using
+	//! for-loops
 	int used_length = 0;
 #endif
 
@@ -85,7 +104,7 @@ protected:
 		iter(const char *c) :
 				start(c), last(c + std::strlen(c)) {
 		}
-		//! constructro for char
+		//! constructor for char
 		iter(char ch) :
 				c(ch), start(&c), last(&this->c + 1) {
 		}
@@ -279,6 +298,8 @@ public:
 	//! the result of that function with an integer.
 	//!
 	//! returns true only if
+	//! \li the first lhs different character has a higher
+	//! ASCII value than the corresponding rhs character
 	//!
 	//! All other combinations return false
 	template<typename T>
@@ -294,6 +315,8 @@ public:
 	//! the result of that function with an integer.
 	//!
 	//! returns true only if
+	//! \li the first lhs different character has a lower
+	//! ASCII value than the corresponding rhs character
 	//!
 	//! All other combinations return false
 	template<typename T>
@@ -308,6 +331,10 @@ public:
 	//! the result of that function with an integer.
 	//!
 	//! returns true only if
+	//! \li the first lhs different character has a lower
+	//! ASCII value than the corresponding rhs character OR
+	//! \li all characters are the same OR
+	//! \li length is the same
 	//!
 	//! All other combinations return false
 	template<typename T>
@@ -323,6 +350,10 @@ public:
 	//! the result of that function with an integer.
 	//!
 	//! returns true only if
+	//! \li the first lhs different character has a higher
+	//! ASCII value than the corresponding rhs character OR
+	//! \li all characters are the same OR
+	//! \li length is the same
 	//!
 	//! All other combinations return false
 	template<typename T>
@@ -386,7 +417,9 @@ private:
 	}
 
 	// @TODO
-	//! Need to implement this method...
+	//! Need to implement the int compare
+	//! or the compiler implements this
+	//! method in the template
 	int compare(const int & rhs) const {
 		return compare(pBuff) <= 0;
 	}
@@ -411,23 +444,6 @@ private:
 			return -1;
 		return 0; // equal in length and all chars same
 	}
-
-	/*	int compare(const char rhs) const {
-	 // @TODO strlen(rhs)
-	 if (pBuff == 0)
-	 return 0;
-
-	 if (pBuff[0] > rhs) // char in lhs > char of rhs
-	 return 1;
-	 if (pBuff[0] < rhs) // char in rhs > char of lhs
-	 return -1;
-	 if (rhs == '\0' && pBuff[0] != '\0') // rhs shorter
-	 return 1;
-
-	 if (rhs != '\0') // lhs shorter
-	 return -1;
-	 return 0; // equal in length and all chars same
-	 }*/
 
 };
 
@@ -481,8 +497,7 @@ public:
 	//! use with care, or machine code can be very
 	//! lengthy.
 	template<int M>
-	fixed_string(const fixed_string<M> & rhs) :/home/martin/Documents/Onderzoekssemester/pva string/workspace/fixed_string/fixed_string.hpp:207: warning: Member operator+=(T input) (function) of class fixed_string::fixed_string< 0 > is not documented.
-
+	fixed_string(const fixed_string<M> & rhs) :
 			fixed_string<0>(contents, length) {
 		for (char c : iter(rhs)) //iters
 			fixed_string<0>::append(c);
@@ -527,10 +542,14 @@ private:
 	static const int length = N + 1;
 };
 
+
+//! Class to test whether the library does not write
+//! outside the buffer. As long as the function
+//! check_padding returns true, the padding has not
+//! been overwritten hence the library does not write
+//! outside its scope.
 class fixed_string_with_guard: public fixed_string<0> {
 public:
-
-	static const bool is_fixed_string = true;
 
 	fixed_string_with_guard(char c) :
 			fixed_string<0>(contents + 2, length) {
@@ -567,7 +586,9 @@ public:
 	}
 
 private:
+	//! Buffer for the chars stored in the object
 	char contents[20];
+	//! The  length of the fixed_object.
 	static const int length = 16;
 };
 } // namespace fixed_string
