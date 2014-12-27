@@ -54,15 +54,45 @@
 #include "defines.hpp"
 
 namespace fixed_string {
-// @TODO explain why
-//! forward declaration
+
+//! forward declaration to use class in subclass iter
 template<int N> class fixed_string;
 
-// @TODO rewrite
-/// @brief implementation containing all functions
-/// @details
-/// Usage: none - all functions are inherited by fixed_string<N>
-///
+//! @brief implementation containing all functions
+//! @details
+//! Usage: none - all functions are inherited by fixed_string<N>
+//! This class, implementation, contains all functions
+//! which are shared among all fixed_string<N> objects.
+//! The reason why these methods are separated from the
+//! fixed_string<N> template, is that this results in
+//! less machinecode than when these methods are
+//! implemented within the template.
+//! This implementation provides the following functionality:
+//! /li /ref iter class
+//! 	- the iter class provides for forloops such as
+//!		for(char ch : iter(somechararray)
+//!			- char
+//! 		- char *
+//!			- fixed_string
+//! /li c_str()
+//! /li get_allocated_length()
+//! /li get_used_length()
+//! /li append()
+//! /li various comparison operators
+//!		- operator==
+//!		- operator!=
+//!		- operator<=
+//!		- operator<
+//!		- operator>=
+//!		- operator>
+//! /li assignment operators
+//!		- char
+//!		- char *
+//!		- fixed_string
+//! /li addition-assignment operators
+//!		- char
+//!		- char *
+//!		- fixed_string
 template<>
 class fixed_string<0> {
 private:
