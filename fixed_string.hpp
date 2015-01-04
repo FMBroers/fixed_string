@@ -68,31 +68,37 @@ template<int N> class fixed_string;
 //! less machinecode than when these methods are
 //! implemented within the template.
 //! This implementation provides the following functionality:
-//! /li /ref iter class
-//! 	- the iter class provides for forloops such as
-//!		for(char ch : iter(somechararray)
-//!			- char
-//! 		- char *
-//!			- fixed_string
-//! /li c_str()
-//! /li get_allocated_length()
-//! /li get_used_length()
-//! /li append()
-//! /li various comparison operators
+//! <ol>
+//! <li> iter class
+//!		<ol>
+//! 	<li> the iter class provides for range-based 'for' loops such as
+//!		for(char ch : iter(somechararray))
+//!			<ol>
+//!			<li>char
+//!			<li>char *
+//!			<li>fixed_string
+//!			</ol>
+//!		</ol>
+//! <li> c_str()
+//! <li> get_allocated_length()
+//! <li> get_used_length()
+//! <li> append()
+//! <li> various comparison operators
 //!		- operator==
 //!		- operator!=
 //!		- operator<=
 //!		- operator<
 //!		- operator>=
 //!		- operator>
-//! /li assignment operators
+//! <li> assignment operators
 //!		- char
 //!		- char *
 //!		- fixed_string
-//! /li addition-assignment operators
+//! <li> addition-assignment operators
 //!		- char
 //!		- char *
 //!		- fixed_string
+//! </ol>
 template<>
 class fixed_string<0> {
 private:
@@ -295,8 +301,8 @@ public:
 	//! the result of that function with an integer.
 	//!
 	//! returns true only if
-	//! \li all characters are the same
-	//! \li length is the same
+	//! <li> all characters are the same
+	//! <li> length is the same
 	//!
 	//! All other combinations return false
 	template<typename T>
@@ -312,7 +318,7 @@ public:
 	//! the result of that function with an integer.
 	//!
 	//! returns true only if
-	//! \li one or more characters differ
+	//! <li> one or more characters differ
 	//!
 	//! All other combinations return false
 	template<typename T>
@@ -328,7 +334,7 @@ public:
 	//! the result of that function with an integer.
 	//!
 	//! returns true only if
-	//! \li the first lhs different character has a higher
+	//! <li> the first lhs different character has a higher
 	//! ASCII value than the corresponding rhs character
 	//!
 	//! All other combinations return false
@@ -345,7 +351,7 @@ public:
 	//! the result of that function with an integer.
 	//!
 	//! returns true only if
-	//! \li the first lhs different character has a lower
+	//! <li> the first lhs different character has a lower
 	//! ASCII value than the corresponding rhs character
 	//!
 	//! All other combinations return false
@@ -361,10 +367,10 @@ public:
 	//! the result of that function with an integer.
 	//!
 	//! returns true only if
-	//! \li the first lhs different character has a lower
+	//! <li> the first lhs different character has a lower
 	//! ASCII value than the corresponding rhs character OR
-	//! \li all characters are the same OR
-	//! \li length is the same
+	//! <li> all characters are the same OR
+	//! <li> length is the same
 	//!
 	//! All other combinations return false
 	template<typename T>
@@ -380,10 +386,10 @@ public:
 	//! the result of that function with an integer.
 	//!
 	//! returns true only if
-	//! \li the first lhs different character has a higher
+	//! <li> the first lhs different character has a higher
 	//! ASCII value than the corresponding rhs character OR
-	//! \li all characters are the same OR
-	//! \li length is the same
+	//! <li> all characters are the same OR
+	//! <li> length is the same
 	//!
 	//! All other combinations return false
 	template<typename T>
@@ -514,6 +520,18 @@ public:
 	fixed_string(char c) :
 			fixed_string<0>(contents, length) {
 		fixed_string<0>::append(c);
+	}
+
+	// @TODO explain better
+	//! explicity define ctor
+	//! else compiler assumes
+	//! that assigment via
+	//! same-length fixed_string
+	//! is same fixed_string...
+	fixed_string(const fixed_string<N> & rhs) :
+		fixed_string<0>(contents, length) {
+		for(char c: iter(rhs))
+			fixed_string<0>::append(c);
 	}
 
 	//! Copy constructor. It calls the

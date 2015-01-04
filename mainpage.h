@@ -37,6 +37,8 @@
  * \subsection step1 Step 1:
  * To use this library, simply #include "fixed_string.hpp" (or < fixed_string > when you're using this
  * library within your PATH)
+ * In order to compile successfully, a recent compiler (GCC 4.8) is necessarily, due to the usage of
+ * range-based 'for' loops!
  *
  * \subsection step2 Step 2:
  * To create a fixed_string, with a predefined length, use the example below to create a fixed_string with
