@@ -1,7 +1,7 @@
 fixed_string
 ============
 
-string library optimized to only use stack. Length is known at compile-time and cannot be changed. Ever.
+String library optimized to prevent memory fragmentation with strings. String length is known at compile-time and cannot be changed. Ever. 
 
 === Summary ===
 
