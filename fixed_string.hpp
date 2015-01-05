@@ -397,19 +397,27 @@ public:
 		return compare(rhs) >= 0;
 	}
 
-	// operator[]
+	//! return n'th character, if valid
+	//! else return error character
 	char & operator[](int n) {
 		return valid(n) ? pBuff[n] : error_char;
 	}
-	// doesn't compile ?
+	//! return n'th character, if valid
+	//! else return '?'
+	//! const, because character cannot
+	//! be changed with this method
 	char operator[](int n) const {
 		return valid(n) ? pBuff[n] : '?';
 	}
 
+	//! return address to start of buffer
+	//! needed for range-based 'for' loops
 	char * begin() {
 		return pBuff;
 	}
 
+	//! return address to end of buffer
+	//! needed for range-based 'for' loops
 	char * end() {
 #if defined(OPTIMIZEFORSPEED)
 		return pBuff + used_length;
@@ -460,6 +468,10 @@ private:
 		return compare(pBuff) <= 0;
 	}
 
+	//! compare method for different types
+	//! types could be char, char*, fixed_string
+	//! returns when character differs
+	//! irregardless of case
 	template<typename T>
 	int compare(T const & rhs) const {
 		int c = 0;
@@ -475,7 +487,6 @@ private:
 				return 1;
 			c++;
 		}
-		// @TODO: check this one
 		if (rhs != '\0' && pBuff[c] != '\0') // lhs shorter
 			return -1;
 		return 0; // equal in length and all chars same
