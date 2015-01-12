@@ -25,6 +25,7 @@
 
 #include "fixed_string.hpp"
 #include <iostream>
+#include <string>
 
 TEST(fixed_string, Constructor_char) {
 	// ctor char
@@ -403,22 +404,22 @@ TEST(fixed_string, Assignment_operator_fixed_string_ctor) {
 }
 
 TEST(fixed_string, time) {
-/*
+
 	volatile int i = 0;
 	uint32_t iterations = 100000;
 
 
 	auto begin = std::chrono::high_resolution_clock::now();
 
-	fixed_string<10> fs;
+	fixed_string::fixed_string<1000> fs;
 	for(uint32_t j = 0; j < iterations; ++j)
 	{
 	    // code to benchmark
 		// double assignment
-		fs = "";
+		fs = "a";
 		// unroll for-loop
-		  for(i = 0; i < 10; i++) {
-			  fs += 'a';
+		  for(i = 0; i < 1000; i++) {
+			  fs += "h";
 		  }
 	}
 
@@ -432,16 +433,14 @@ TEST(fixed_string, time) {
 	for(uint32_t j = 0; j < iterations; ++j)
 	{
 	    // code to benchmark
-		  s = "";
-		  for(i = 0; i < 10; i++) {
-			  s += 'a';
+		  s = "a";
+		  for(i = 0; i < 1000; i++) {
+			  s += "h";
 		  }
 	}
 	end = std::chrono::high_resolution_clock::now();
 	duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count();
 	std::cout << "std::string: " << '\t' << duration << "ns total, average : \t" << duration / iterations << "ns." << std::endl;
-*/
-
 
 }
 

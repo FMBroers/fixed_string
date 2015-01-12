@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.6)
  if(UNIX)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -O0" )
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -O3" )
 set(CMAKE_VERBOSE_MAKEFILE on)
 endif()
 # Locate GTest

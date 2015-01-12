@@ -232,7 +232,7 @@ public:
 			pBuff[i+1] = '\0';
 		}
 #endif
-#if defined(CANUSELOCALEXCEPTIONS)
+#if defined(CANUSELOCALEXCEPTIONS) //@TODO different name - it isn't an exception
 		else {
 			// in template class meegeven voor al dan niet afhandelen van exceptions
 			/*std::cout << "CANUSELOCALEXCEPTIONS " << std::endl;*/
@@ -240,10 +240,10 @@ public:
 			error_char = '?';
 		}
 #endif
-#if defined(CANUSESTDEXCEPTIONS)
+#if defined(CANUSESTDEXCEPTIONS) // include fatal error?
 		// @TODO not tested
 		else {
-			raise(std::bad_alloc);
+			raise(std::indexoutofrange);
 		}
 #endif
 	}
