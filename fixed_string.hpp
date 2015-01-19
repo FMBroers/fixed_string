@@ -129,10 +129,6 @@ private:
 	int used_length = 0;
 #endif
 
-#if defined(ENABLE_SWAP)
-	char swapchar;
-#endif
-
 protected:
 	//! class iter provides for-loop integration for the types char, char* and fixed_string< 0 >.
 	//! This means we can use \code for( char ch : some_char_array ) { \endcode or
@@ -451,7 +447,7 @@ public:
 		return NULL;
 #endif
 	}
-#if defined(ENABLE_SWAP)
+
 	void set_used_length(int newvalue) {
 		if(valid(newvalue-1)) used_length = newvalue;
 	}
@@ -464,21 +460,27 @@ public:
 			rhs.set_used_length(0);
 			for(char ch : iter(pBuff)) {
 				if(used_length < (rhs.get_allocated_length()-1 )) {
-					swapchar = rhs[used_length];
-					rhs[used_length] = ch;
-					rhs.set_used_length(used_length);
 					if(valid(used_length)) {
 						// We cannot use append(char) as we are reading
 						// from current buffer
-						pBuff[used_length] = swapchar;
+						pBuff[used_length] = rhs[used_length];;
 					}
-					if(swapchar != '\0')
+					//swapchar = rhs[used_length];
+
+					if(rhs[used_length] != '\0') {
 						used_length++;
-					// lhs finished, append lhs tail to rhs
-					else {
+					} else {
+						// lhs finished, append lhs tail to rhs
+						rhs.set_used_length(used_length+1);
+						rhs[used_length] = ch;
 						rhs += &pBuff[used_length+1];
 						break;
 					}
+					rhs.set_used_length(used_length);
+					rhs[used_length-1] = ch;
+
+
+
 
 				} else if(used_length == rhs.get_allocated_length() -1) {
 					rhs.set_used_length(used_length);
@@ -486,13 +488,13 @@ public:
 			}
 			// append null-terminator (as we are not using normal append)
 			pBuff[used_length] = '\0';
-		// return function w/ args swapped
 		} else {
+			// return function w/ args swapped
 			return rhs.swap(*this);
 		}
 		return *this;
 	}
-#endif
+
 private:
 	bool valid(const int pos) const {
 		return (pos >= 0 && pos < (allocated_length - 1));

@@ -775,7 +775,16 @@ TEST(fixed_string, swap) {
 	EXPECT_STREQ(fs7.c_str(), "Hello");
 	EXPECT_STREQ(fs8.c_str(), "12345678");
 
-
+	// check if the used_length attribute
+	// is set back correctly.
+	EXPECT_EQ(strlen(fs1.c_str()),				 			fs1.get_used_length());
+	EXPECT_EQ(strlen(fs2.c_str()),				 			fs2.get_used_length());
+	EXPECT_EQ(strlen(fs3.c_str()),				 			fs3.get_used_length());
+	EXPECT_EQ(strlen(fs4.c_str()),				 			fs4.get_used_length());
+	EXPECT_EQ(strlen(fs5.c_str()),				 			fs5.get_used_length());
+	EXPECT_EQ(strlen(fs6.c_str()),				 			fs6.get_used_length());
+	EXPECT_EQ(strlen(fs7.c_str()),				 			fs7.get_used_length());
+	EXPECT_EQ(strlen(fs8.c_str()),				 			fs8.get_used_length());
 
 
 

@@ -46,7 +46,6 @@
 #undef CANUSESTDEXCEPTIONS
 #endif
 
-#define ENABLE_SWAP
 
 
 
