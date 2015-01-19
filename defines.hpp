@@ -24,29 +24,14 @@
  * defines.hpp
  *
  *  Created on: Dec 16, 2014
- *      Author: martin
+ *      Author: Martin Broers
  */
 
 #ifndef DEFINES_HPP_
 #define DEFINES_HPP_
 
-
-
-
-#undef CANUSESTDEXCEPTIONS
-#define CANUSELOCALEXCEPTIONS
+#undef CANTHROWSTDEXCEPTIONS
 
 #define OPTIMIZEFORSPEED
-
-#ifdef CANUSESTDEXCEPTIONS
-#undef CANUSELOCALEXCEPTIONS
-#endif
-
-#ifdef CANUSELOCALEXCEPTIONS
-#undef CANUSESTDEXCEPTIONS
-#endif
-
-
-
 
 #endif /* DEFINES_HPP_ */

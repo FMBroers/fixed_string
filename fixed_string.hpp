@@ -52,6 +52,9 @@
 #include <cstring>
 
 #include "defines.hpp"
+#if defined(CANTHROWSTDEXCEPTIONS)
+#include <stdexcept>
+#endif
 
 namespace fixed_string {
 
@@ -232,20 +235,16 @@ public:
 			pBuff[i+1] = '\0';
 		}
 #endif
-#if defined(CANUSELOCALEXCEPTIONS) //@TODO different name - it isn't an exception
+
 		else {
 			// in template class meegeven voor al dan niet afhandelen van exceptions
-			/*std::cout << "CANUSELOCALEXCEPTIONS " << std::endl;*/
+			/*std::cout << "USE_ERROR_CHAR " << std::endl;*/
 			// error char deprecated
 			error_char = '?';
-		}
+#if defined(CANTHROWSTDEXCEPTIONS)
+			throw std::out_of_range("out of range");
 #endif
-#if defined(CANUSESTDEXCEPTIONS) // include fatal error?
-		// @TODO not tested
-		else {
-			raise(std::indexoutofrange);
 		}
-#endif
 	}
 
 	//! operator+= appends character to this fixed_string
@@ -400,8 +399,17 @@ public:
 	//! return n'th character, if valid
 	//! else return error character
 	char & operator[](int n) {
-		return valid(n) ? pBuff[n] : error_char;
+		if (valid(n))
+			return pBuff[n];
+		else {
+#if defined(CANTHROWSTDEXCEPTIONS)
+			throw std::out_of_range("out_of_range");
+#endif
+			return error_char;
+		}
+
 	}
+
 	//! return n'th character, if valid
 	//! else return '?'
 	//! const, because character cannot
@@ -448,41 +456,49 @@ public:
 #endif
 	}
 
+protected:
+	//! Method to externally define a new
+	//! used_length value. Used for swap()
+	//! routine
 	void set_used_length(int newvalue) {
-		if(valid(newvalue-1)) used_length = newvalue;
+		if (valid(newvalue - 1))
+			used_length = newvalue;
 	}
 
-	fixed_string & swap(fixed_string& rhs ) {
-		if(used_length >= rhs.get_used_length()) {
+public:
+	//! the swap method allows two fixed_strings
+	//! to have their values swapped. All chars
+	//! beyond the capacity of a fixed_string
+	//! are discarded.
+	//! The function iterates through the
+	//! longest string (used_length) and swaps
+	//! each character 1 by 1
+	fixed_string & swap(fixed_string& rhs) {
+		if (get_used_length() >= rhs.get_used_length()) {
 			// 'reset' this string
-			// @TODO implement OPTIMIZEFORSPEED
 			used_length = 0;
 			rhs.set_used_length(0);
-			for(char ch : iter(pBuff)) {
-				if(used_length < (rhs.get_allocated_length()-1 )) {
-					if(valid(used_length)) {
+			for (char ch : iter(pBuff)) {
+				if (get_used_length() < (rhs.get_allocated_length() - 1)) {
+					if (valid(used_length)) {
 						// We cannot use append(char) as we are reading
 						// from current buffer
-						pBuff[used_length] = rhs[used_length];;
+						pBuff[used_length] = rhs[used_length];
 					}
-					//swapchar = rhs[used_length];
 
-					if(rhs[used_length] != '\0') {
+					if (rhs[used_length] != '\0') {
 						used_length++;
 					} else {
 						// lhs finished, append lhs tail to rhs
-						rhs.set_used_length(used_length+1);
+						rhs.set_used_length(used_length + 1);
 						rhs[used_length] = ch;
-						rhs += &pBuff[used_length+1];
+						rhs += &pBuff[used_length + 1];
 						break;
 					}
 					rhs.set_used_length(used_length);
-					rhs[used_length-1] = ch;
+					rhs[used_length - 1] = ch;
 
-
-
-
-				} else if(used_length == rhs.get_allocated_length() -1) {
+				} else if (used_length == rhs.get_allocated_length() - 1) {
 					rhs.set_used_length(used_length);
 				}
 			}
@@ -524,9 +540,9 @@ private:
 		if (pBuff == 0 || rhs == 0)
 			return 0;
 		for (char ch : iter(rhs)) {
-			if (pBuff[c] > ch  ) // char in lhs > char of rhs
+			if (pBuff[c] > ch) // char in lhs > char of rhs
 				return 1;
-			if (pBuff[c] < ch  ) // char in rhs > char of lhs
+			if (pBuff[c] < ch) // char in rhs > char of lhs
 				return -1;
 			// @TODO: check this one
 			if (pBuff[c] != '\0' && ch == '\0') // rhs shorter
@@ -537,9 +553,6 @@ private:
 			return -1;
 		return 0; // equal in length and all chars same
 	}
-
-
-
 
 };
 
@@ -582,15 +595,13 @@ public:
 		fixed_string<0>::append(c);
 	}
 
-	// @TODO explain better
-	//! explicity define ctor
-	//! else compiler assumes
-	//! that assigment via
-	//! same-length fixed_string
-	//! is same fixed_string...
+	//! Explicitly define constructor or else the
+	//! compiler will create a shared pointer
+	//! between two fixed_strings.
+	//! <N> != <M>
 	fixed_string(const fixed_string<N> & rhs) :
-		fixed_string<0>(contents, length) {
-		for(char c: iter(rhs))
+			fixed_string<0>(contents, length) {
+		for (char c : iter(rhs))
 			fixed_string<0>::append(c);
 	}
 
@@ -623,8 +634,8 @@ public:
 	}
 
 	fixed_string(const std::string & ch) :
-		fixed_string<0>(contents, length) {
-		for (char c : iter(ch.c_str() ))
+			fixed_string<0>(contents, length) {
+		for (char c : iter(ch.c_str()))
 			fixed_string<0>::append(c);
 	}
 
@@ -649,7 +660,6 @@ private:
 	//! The  length of the fixed_object.
 	static const int length = N + 1;
 };
-
 
 //! Class to test whether the library does not write
 //! outside the buffer. As long as the function
