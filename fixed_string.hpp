@@ -113,7 +113,7 @@ private:
 	//! object
 	char *pBuff;
 
-	//! char to indicate an unsuccesfull
+	//! char to indicate an unsuccessful
 	//! update of a fixed_string
 	char error_char;
 
@@ -127,6 +127,10 @@ private:
 	//! it will be calculated using
 	//! for-loops
 	int used_length = 0;
+#endif
+
+#if defined(ENABLE_SWAP)
+	char swapchar;
 #endif
 
 protected:
@@ -447,7 +451,48 @@ public:
 		return NULL;
 #endif
 	}
+#if defined(ENABLE_SWAP)
+	void set_used_length(int newvalue) {
+		if(valid(newvalue-1)) used_length = newvalue;
+	}
 
+	fixed_string & swap(fixed_string& rhs ) {
+		if(used_length >= rhs.get_used_length()) {
+			// 'reset' this string
+			// @TODO implement OPTIMIZEFORSPEED
+			used_length = 0;
+			rhs.set_used_length(0);
+			for(char ch : iter(pBuff)) {
+				if(used_length < (rhs.get_allocated_length()-1 )) {
+					swapchar = rhs[used_length];
+					rhs[used_length] = ch;
+					rhs.set_used_length(used_length);
+					if(valid(used_length)) {
+						// We cannot use append(char) as we are reading
+						// from current buffer
+						pBuff[used_length] = swapchar;
+					}
+					if(swapchar != '\0')
+						used_length++;
+					// lhs finished, append lhs tail to rhs
+					else {
+						rhs += &pBuff[used_length+1];
+						break;
+					}
+
+				} else if(used_length == rhs.get_allocated_length() -1) {
+					rhs.set_used_length(used_length);
+				}
+			}
+			// append null-terminator (as we are not using normal append)
+			pBuff[used_length] = '\0';
+		// return function w/ args swapped
+		} else {
+			return rhs.swap(*this);
+		}
+		return *this;
+	}
+#endif
 private:
 	bool valid(const int pos) const {
 		return (pos >= 0 && pos < (allocated_length - 1));
@@ -460,7 +505,6 @@ private:
 		pBuff[0] = '\0';
 	}
 
-	// @TODO
 	//! Need to implement the int compare
 	//! or the compiler implements this
 	//! method in the template
@@ -491,6 +535,9 @@ private:
 			return -1;
 		return 0; // equal in length and all chars same
 	}
+
+
+
 
 };
 

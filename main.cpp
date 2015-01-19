@@ -403,22 +403,20 @@ TEST(fixed_string, Assignment_operator_fixed_string_ctor) {
 	EXPECT_EQ(6, 									fs_assignment_fixed_string_boundary_overflow.get_used_length());
 }
 
-TEST(fixed_string, time) {
+/*TEST(fixed_string, time) {
 
 	volatile int i = 0;
 	uint32_t iterations = 100000;
 
-
-	auto begin = std::chrono::high_resolution_clock::now();
-
 	fixed_string::fixed_string<1000> fs;
+	auto begin = std::chrono::high_resolution_clock::now();
 	for(uint32_t j = 0; j < iterations; ++j)
 	{
 	    // code to benchmark
-		// double assignment
 		fs = "a";
+
 		// unroll for-loop
-		  for(i = 0; i < 1000; i++) {
+		  for(i = 0; i < 999; i++) {
 			  fs += "h";
 		  }
 	}
@@ -428,21 +426,66 @@ TEST(fixed_string, time) {
 	std::cout << "fixed_string: " << '\t' << duration << "ns total, average : \t" << duration / iterations << "ns." << std::endl;
 
 
-	begin = std::chrono::high_resolution_clock::now();
 	std::string s;
+
+	begin = std::chrono::high_resolution_clock::now();
+
 	for(uint32_t j = 0; j < iterations; ++j)
 	{
 	    // code to benchmark
-		  s = "a";
-		  for(i = 0; i < 1000; i++) {
+
+		s.resize(0);
+
+		  for(i = 0; i < 999; i++) {
 			  s += "h";
 		  }
+		  //delete s;
 	}
 	end = std::chrono::high_resolution_clock::now();
 	duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count();
 	std::cout << "std::string: " << '\t' << duration << "ns total, average : \t" << duration / iterations << "ns." << std::endl;
 
-}
+
+	std::string dummy;
+	begin = std::chrono::high_resolution_clock::now();
+
+	for(uint32_t j = 0; j < iterations; ++j)
+	{
+	    // code to benchmark
+
+		s.swap(dummy);
+
+		  for(i = 0; i < 999; i++) {
+			  s += "h";
+		  }
+		  //delete s;
+	}
+	end = std::chrono::high_resolution_clock::now();
+	duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count();
+	std::cout << "std::string: " << '\t' << duration << "ns total, average : \t" << duration / iterations << "ns." << std::endl;
+
+	s = "";
+	begin = std::chrono::high_resolution_clock::now();
+
+	for(uint32_t j = 0; j < iterations; ++j)
+	{
+	    // code to benchmark
+
+		s = "";
+
+		  for(i = 0; i < 999; i++) {
+			  s += "h";
+		  }
+		  //delete s;
+	}
+	end = std::chrono::high_resolution_clock::now();
+	duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end-begin).count();
+	std::cout << "std::string: " << '\t' << duration << "ns total, average : \t" << duration / iterations << "ns." << std::endl;
+
+
+
+
+}*/
 
 //! This TEST tests the following:
 //! - <=
@@ -706,6 +749,38 @@ TEST(MyString, Set) {
   EXPECT_STREQ(NULL, s.c_string());
 }
 */
+
+TEST(fixed_string, swap) {
+	fixed_string::fixed_string<10> fs1("HelloWorld");
+	fixed_string::fixed_string<8> fs2("12345678");
+	fs1.swap(fs2);
+	EXPECT_STREQ(fs1.c_str(), "12345678");
+	EXPECT_STREQ(fs2.c_str(), "HelloWor");
+
+	fixed_string::fixed_string<8> fs3("12345678");
+	fixed_string::fixed_string<10> fs4("HelloWorld");
+	fs3.swap(fs4);
+	EXPECT_STREQ(fs3.c_str(), "HelloWor");
+	EXPECT_STREQ(fs4.c_str(), "12345678");
+
+	fixed_string::fixed_string<8> fs5("1234");
+	fixed_string::fixed_string<10> fs6("HelloWorld");
+	fs5.swap(fs6);
+	EXPECT_STREQ(fs5.c_str(), "HelloWor");
+	EXPECT_STREQ(fs6.c_str(), "1234");
+
+	fixed_string::fixed_string<8> fs7("12345678");
+	fixed_string::fixed_string<10> fs8("Hello");
+	fs7.swap(fs8);
+	EXPECT_STREQ(fs7.c_str(), "Hello");
+	EXPECT_STREQ(fs8.c_str(), "12345678");
+
+
+
+
+
+
+}
 
 
 int main(int argc, char **argv) {

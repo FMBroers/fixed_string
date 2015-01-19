@@ -46,6 +46,8 @@
 #undef CANUSESTDEXCEPTIONS
 #endif
 
+#define ENABLE_SWAP
+
 
 
 #endif /* DEFINES_HPP_ */
